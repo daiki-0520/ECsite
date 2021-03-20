@@ -1,0 +1,55 @@
+from django.db import models
+
+
+class ProductTypes(models.Model):
+    name = models.CharField(max_length=1000)
+
+    class Meta:
+        db_table = 'product_types'
+
+    def __str__(self):
+        return self.name
+
+
+class Manufacturers(models.Model):
+    name = models.CharField(max_length=1000)
+
+    class Meta:
+        db_table='manufacturers'
+
+    def __str__(self):
+        return self.name
+
+
+class Products(models.Model):
+    name = models.CharField(max_length=1000)
+    price = models.IntegerField()
+    stock = models.IntegerField()
+    product_type = models.ForeignKey(
+        ProductTypes, on_delete=models.CASCADE
+    )
+    manufacturer = models.ForeignKey(
+        Manufacturers, on_delete = models.CASCADE
+    )
+
+    class Meta:
+        db_table = 'products'
+
+    def __str__(self):
+        return self.name
+
+
+class ProductPictures(models.Model):
+    picture = models.FileField(upload_to='product_pictures/')
+    product = models.ForeignKey(
+        Products, on_delete = models.CASCADE
+    )
+    order = models.IntegerField()
+
+    class Meta:
+        db_table = 'product_pictures'
+        #orderカラムを使って昇順に並び替え
+        ordering = ['order']   
+
+    def __str__(self):
+        return self.product.name + ': ' + str(self.order)
